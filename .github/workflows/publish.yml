@@ -1,0 +1,74 @@
+# "Publish to live site" — copies the website files to the web server by FTP.
+# Runs only when someone clicks Run workflow (Actions tab → Publish to live site → Run workflow),
+# so changes can be previewed on GitHub Pages first.
+#
+# Needs these repository settings (Settings → Secrets and variables → Actions):
+#   Secrets:   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD
+#   Variables: FTP_REMOTE_DIR  — the folder to upload into, as the FTP login sees it
+#              SITE_URL        — the address of that folder on the web, ending in /
+name: Publish to live site
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: publish-live-site
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the website files
+      uses: actions/checkout@v4
+
+    - name: Check the settings are filled in
+      env:
+        FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+        SITE_URL: ${{ vars.SITE_URL }}
+      run: |
+        [ -n "$FTP_SERVER" ] || { echo "::error::Add the FTP_SERVER, FTP_USERNAME and FTP_PASSWORD secrets first."; exit 1; }
+        [ -n "$REMOTE_DIR" ] || { echo "::error::Add the FTP_REMOTE_DIR variable first."; exit 1; }
+        [ -n "$SITE_URL" ] || { echo "::error::Add the SITE_URL variable first."; exit 1; }
+
+    - name: Make files readable by the web server
+      run: |
+        find . -path ./.git -prune -o -type d -exec chmod 755 {} +
+        find . -path ./.git -prune -o -type f -exec chmod 644 {} +
+
+    - name: Install lftp
+      run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+    - name: Upload to server
+      # lftp reconnects and retries if the FTP connection drops. --delete removes files on the server that were
+      # deleted from this repository (only inside FTP_REMOTE_DIR). Repository-only files are never uploaded.
+      env:
+        FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+        LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+      run: |
+        lftp -c "
+          set ftp:ssl-allow no;
+          set ftp:passive-mode yes;
+          set net:timeout 30;
+          set net:max-retries 10;
+          set net:reconnect-interval-base 5;
+          set net:reconnect-interval-max 30;
+          open --env-password -u \"$FTP_USERNAME\" -p 21 \"$FTP_SERVER\";
+          mirror --reverse --delete --parallel=2 --verbose=1
+            --exclude-glob .git* --exclude-glob .github/ --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store
+            ./ \"$REMOTE_DIR\";
+        "
+
+    - name: Check the site loads
+      env:
+        SITE_URL: ${{ vars.SITE_URL }}
+      run: |
+        for page in "" team.html blog/; do
+          code=$(curl -s -o /dev/null -w '%{http_code}' "${SITE_URL}${page}?check=$GITHUB_RUN_ID" || true)
+          echo "$code  ${SITE_URL}${page}"
+          [ "$code" = "200" ] || failed=1
+        done
+        [ -z "$failed" ] || { echo "::error::The site isn't loading at ${SITE_URL}"; exit 1; }
