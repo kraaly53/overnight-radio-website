@@ -13,6 +13,29 @@
   }
 })();
 
+/* Preview-only refresh control; never appears on overnightradio.com. */
+(() => {
+  if (location.hostname !== "kraaly53.github.io" || !location.pathname.startsWith("/overnight-radio-website/")) return;
+  const addRefresh = () => {
+    const footer = document.querySelector(".footer__legal");
+    if (!footer || footer.querySelector(".preview-refresh")) return;
+    const link = document.createElement("a");
+    link.className = "preview-refresh";
+    link.href = "#";
+    link.textContent = "Refresh preview";
+    link.style.cssText = "display:inline-block;margin-top:14px;color:#ffb23f;text-decoration:underline;text-underline-offset:3px";
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const url = new URL(location.href);
+      url.searchParams.set("preview", String(Date.now()));
+      location.assign(url.href);
+    });
+    footer.appendChild(link);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addRefresh);
+  else addRefresh();
+})();
+
 (() => {
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
