@@ -98,6 +98,5 @@ var wordSlow = 150, wordNormal = 180, wordFast = 240;
     var wTime = ((wCount / wSpeed) * 60).toFixed(2);
     document.getElementById("wcount").value = wCount;
     document.getElementById("wlength").value = wTime + " seconds";
-    document.getElementById("results").value = word;
   });
 })();
