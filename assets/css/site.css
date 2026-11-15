@@ -562,11 +562,8 @@ button { font: inherit; cursor: pointer; }
 .keywords a { display: inline-block; padding: 7px 12px; border-radius: 999px; background: var(--paper-2); font-size: 13.5px; text-decoration: none; color: var(--muted); }
 .keywords a:hover { background: var(--navy); color: #fff; }
 
-/* Extend the dark footer into the iPhone home-indicator safe area. */
-.footer { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
-
 /* ---------- Footer ---------- */
-.footer { background: var(--night); color: var(--muted-n); padding: 64px 0 28px; position: relative; overflow: hidden; }
+.footer { background: var(--night); color: var(--muted-n); padding: 64px 0 calc(28px + env(safe-area-inset-bottom, 0px)); position: relative; overflow: hidden; }
 .footer__grid { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--line-n); }
 .footer__brand .brand { margin-bottom: 18px; }
 .footer__line { margin: 0 0 6px; font-size: 15px; }
