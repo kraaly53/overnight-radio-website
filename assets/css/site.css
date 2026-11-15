@@ -485,6 +485,15 @@ button { font: inherit; cursor: pointer; }
 .readout + .readout { margin-left: 0; }
 .readout output { font: 800 34px/1 var(--display); color: var(--amber); letter-spacing: -0.02em; min-width: 120px; }
 
+.console__pane--controls { justify-content: flex-start; gap: 22px; }
+.console__pane--controls > .console__label { margin: 0; }
+.console__pane--controls .console__speed { align-items: stretch; }
+.console__pane--controls .btn { align-self: flex-start; }
+.console__readouts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 12px; padding-top: 24px; border-top: 1px solid var(--line-n); }
+.console__readouts .readout, .console__readouts .readout + .readout { margin-left: 0; min-width: 0; }
+.console__readouts .readout output { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 540px) { .console__readouts { grid-template-columns: 1fr; } }
+
 /* ---------- Contact ---------- */
 .contact { display: grid; grid-template-columns: 1.3fr .7fr; gap: clamp(24px, 4vw, 48px); align-items: start; }
 .form { display: grid; gap: 18px; background: var(--card); padding: clamp(22px, 4vw, 40px); border-radius: var(--r-lg); box-shadow: var(--shadow); }
