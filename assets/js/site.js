@@ -1,3 +1,18 @@
+/* Match the iPhone Safari status and home-indicator areas to the midnight theme. */
+(() => {
+  let theme = document.querySelector('meta[name="theme-color"]');
+  if (!theme) {
+    theme = document.createElement("meta");
+    theme.name = "theme-color";
+    document.head.appendChild(theme);
+  }
+  theme.content = "#0a1426";
+  const viewport = document.querySelector('meta[name="viewport"]');
+  if (viewport && !viewport.content.includes("viewport-fit=cover")) {
+    viewport.content += ", viewport-fit=cover";
+  }
+})();
+
 (() => {
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
