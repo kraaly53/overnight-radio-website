@@ -1,0 +1,55 @@
+name: Version preview assets automatically
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/**'
+      - '.github/workflows/version-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: version-preview-assets
+  cancel-in-progress: false
+
+jobs:
+  version:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update CSS and JavaScript cache keys in HTML
+        env:
+          ASSET_VERSION: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import os, pathlib, re
+          version = os.environ["ASSET_VERSION"][:12]
+          pattern = re.compile(r'((?:href|src)=["\x27][^"\x27]*?assets/[^"\x27?]+\.(?:css|js))\?v=[^"\x27]+', re.I)
+          count = 0
+          for path in pathlib.Path(".").rglob("*.html"):
+              if ".git" in path.parts:
+                  continue
+              before = path.read_text(encoding="utf-8")
+              after = pattern.sub(lambda m: m.group(1) + "?v=" + version, before)
+              if before != after:
+                  path.write_text(after, encoding="utf-8")
+                  count += 1
+          print(f"Versioned asset links in {count} HTML pages.")
+          PY
+      - name: Commit versioned HTML if changed
+        run: |
+          if git diff --quiet; then
+            echo "No asset URLs to update"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html'
+          git commit -m "Refresh asset versions for preview"
+          git push
