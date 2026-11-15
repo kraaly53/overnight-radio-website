@@ -77,12 +77,9 @@
         <label for="message" class="console__label">Script</label>
         <textarea name="message" id="message" rows="10" placeholder="Enter script here" autofocus></textarea>
       </div>
-      <div class="console__pane">
-        <label for="results" class="console__label">Results</label>
-        <textarea name="results" id="results" rows="10" placeholder="Results" readonly></textarea>
-      </div>
-      <div class="console__bar">
-        <label class="console__speed">
+      <div class="console__pane console__pane--controls">
+        <p class="console__label">Calculate Script Length</p>
+        <label class="console__speed" for="speed">
           <span class="console__label">Script Read Speed</span>
           <select id="speed" name="speed">
             <option value="1">Slow Read</option>
@@ -91,8 +88,10 @@
           </select>
         </label>
         <button type="button" class="btn btn--amber" id="calculateScript">Calculate Length</button>
-        <div class="readout"><span class="console__label">Total Script Length</span><output name="wlength" id="wlength">0</output></div>
-        <div class="readout"><span class="console__label">Word Count</span><output name="wcount" id="wcount">0</output></div>
+        <div class="console__readouts">
+          <div class="readout"><span class="console__label">Total Script Length</span><output name="wlength" id="wlength">0</output></div>
+          <div class="readout"><span class="console__label">Word Count</span><output name="wcount" id="wcount">0</output></div>
+        </div>
       </div>
     </form>
   </div>
