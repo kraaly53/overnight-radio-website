@@ -37,6 +37,10 @@ jobs:
                   continue
               before = path.read_text(encoding="utf-8")
               after = pattern.sub(lambda m: m.group(1) + "?v=" + version, before)
+              if 'name="theme-color"' not in after:
+                  after = after.replace('<meta charset="utf-8">', '<meta charset="utf-8">\\n  <meta name="theme-color" content="#0a1426">', 1)
+              if "viewport-fit=cover" not in after:
+                  after = after.replace('content="width=device-width, initial-scale=1"', 'content="width=device-width, initial-scale=1, viewport-fit=cover"', 1)
               if before != after:
                   path.write_text(after, encoding="utf-8")
                   count += 1
