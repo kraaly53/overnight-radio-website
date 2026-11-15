@@ -37,6 +37,7 @@ jobs:
                   continue
               before = path.read_text(encoding="utf-8")
               after = pattern.sub(lambda m: m.group(1) + "?v=" + version, before)
+              after = after.replace('<meta charset="utf-8">\\n  <meta name="theme-color"', '<meta charset="utf-8">' + chr(10) + '  <meta name="theme-color"')
               if 'name="theme-color"' not in after:
                   after = after.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + chr(10) + '  <meta name="theme-color" content="#0a1426">', 1)
               if "viewport-fit=cover" not in after:
