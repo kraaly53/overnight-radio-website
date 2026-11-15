@@ -8,8 +8,8 @@ here is exactly what goes on the web.
 
 1. **Edit** a file here on GitHub (or upload a photo or audio file).
 2. **Preview** it about a minute later at **https://kraaly53.github.io/overnight-radio-website/**
-3. **Publish** it to the real website when you're happy: **Actions** tab → **Publish to live site** →
-   **Run workflow**. Nothing reaches the real website until you do this.
+3. **Publish** it to the real website, **overnightradio.com**, when you're happy: **Actions** tab →
+   **Publish to live site** → **Run workflow**. Nothing reaches overnightradio.com until you do this.
 
 ## 2. Changing words on a page
 
@@ -84,12 +84,14 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
 - **Preview:** GitHub Pages, from the `main` branch, root folder. Links are relative, so the same files work on
   GitHub Pages, in a sub-folder on the test server, and at the root of overnightradio.com. `.nojekyll` makes
   GitHub Pages serve the files as they are.
-- **Publish:** `.github/workflows/publish.yml` (manual only). It needs the secrets `FTP_SERVER`, `FTP_USERNAME`,
-  `FTP_PASSWORD` and the variables `FTP_REMOTE_DIR` (the folder as the FTP login sees it — the login starts inside
-  `public_html`, so don't add `/public_html`) and `SITE_URL` (that folder's web address, ending in `/`). It mirrors
-  the repository to that folder and **deletes server files that aren't in the repository** (only inside that
-  folder). README, `.github`, `.nojekyll` and git files are never uploaded.
-- **Server-only behaviour:** `.htaccess` (caching) only works on the real server; GitHub Pages ignores it.
+- **Publish:** `.github/workflows/publish.yml` (manual only) uploads to the live overnightradio.com by FTP. It needs
+  the secrets `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD` (overnightradio.com's FTP login) and the variables
+  `FTP_REMOTE_DIR` (the web folder as that FTP login sees it) and `SITE_URL` (`https://overnightradio.com/`). It
+  only adds and updates files: it **never deletes** anything on the server (so WordPress, old pages and other
+  hosting files are left alone) and **never uploads `.htaccess`** (the server keeps its own). README, `.github`,
+  `.nojekyll` and git files are never uploaded. To remove a page from the live site, delete it on the server too.
+- **Server-only behaviour:** the repository's `.htaccess` (caching rules) isn't published — copy its lines into
+  the server's own `.htaccess` by hand if wanted; GitHub Pages ignores it.
   GitHub Pages can't run PHP, so any `.php` files work on the real server only. The contact form still posts to
   the old WordPress install and won't send from the preview.
 - **History:** these files were generated from the Eleventy project at

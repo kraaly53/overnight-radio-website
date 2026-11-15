@@ -1,11 +1,14 @@
-# "Publish to live site" — copies the website files to the web server by FTP.
+# "Publish to live site" — copies the website files to the live overnightradio.com server by FTP.
 # Runs only when someone clicks Run workflow (Actions tab → Publish to live site → Run workflow),
 # so changes can be previewed on GitHub Pages first.
 #
 # Needs these repository settings (Settings → Secrets and variables → Actions):
 #   Secrets:   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD
-#   Variables: FTP_REMOTE_DIR  — the folder to upload into, as the FTP login sees it
-#              SITE_URL        — the address of that folder on the web, ending in /
+#   Variables: FTP_REMOTE_DIR  — the folder to upload into, as the FTP login sees it (e.g. / for the web root)
+#              SITE_URL        — the address of that folder on the web, ending in / (e.g. https://overnightradio.com/)
+#
+# Safe for a live site that has other things on it: this only ADDS and UPDATES files. It never deletes anything
+# on the server, and it never touches the server's own .htaccess.
 name: Publish to live site
 
 on:
@@ -41,8 +44,8 @@ jobs:
       run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
     - name: Upload to server
-      # lftp reconnects and retries if the FTP connection drops. --delete removes files on the server that were
-      # deleted from this repository (only inside FTP_REMOTE_DIR). Repository-only files are never uploaded.
+      # lftp reconnects and retries if the FTP connection drops. Files are uploaded over the server copies; nothing
+      # on the server is deleted. Repository-only files and .htaccess are never uploaded.
       env:
         FTP_SERVER: ${{ secrets.FTP_SERVER }}
         FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -57,8 +60,8 @@ jobs:
           set net:reconnect-interval-base 5;
           set net:reconnect-interval-max 30;
           open --env-password -u \"$FTP_USERNAME\" -p 21 \"$FTP_SERVER\";
-          mirror --reverse --delete --parallel=2 --verbose=1
-            --exclude-glob .git* --exclude-glob .github/ --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store
+          mirror --reverse --parallel=2 --verbose=1
+            --exclude-glob .git* --exclude-glob .github/ --exclude-glob .htaccess --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store
             ./ \"$REMOTE_DIR\";
         "
 
