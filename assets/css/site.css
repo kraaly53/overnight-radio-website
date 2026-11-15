@@ -47,7 +47,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; background: var(--night); }
 body {
   margin: 0;
   font: 400 17px/1.65 var(--body);
@@ -561,6 +561,9 @@ button { font: inherit; cursor: pointer; }
 .keywords { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 36px 0 0; padding: 24px 0 0; border-top: 1px solid var(--line); }
 .keywords a { display: inline-block; padding: 7px 12px; border-radius: 999px; background: var(--paper-2); font-size: 13.5px; text-decoration: none; color: var(--muted); }
 .keywords a:hover { background: var(--navy); color: #fff; }
+
+/* Extend the dark footer into the iPhone home-indicator safe area. */
+.footer { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
 
 /* ---------- Footer ---------- */
 .footer { background: var(--night); color: var(--muted-n); padding: 64px 0 28px; position: relative; overflow: hidden; }
