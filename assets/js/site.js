@@ -167,34 +167,37 @@
     });
   }
 
-  /* Contact form → Contact Form 7 on contact.overnightradio.com (form 315). Its spam check
-     rejects messages sent less than 4 seconds after the page opened, so send the start time. */
+  /* Contact form → contact.php on the server, which emails info@overnightradio.com.
+     The GitHub Pages preview can't run PHP, so there it sends to the live site's contact.php. */
   const form = $("[data-contact]");
   if (form) {
     const status = $("[data-status]", form);
-    const openedAt = Math.floor(Date.now() / 1000);
+    const show = (ok, text) => {
+      status.hidden = false;
+      status.className = "form__status " + (ok ? "is-ok" : "is-err");
+      status.textContent = text;
+    };
+    form.elements.started.value = Math.floor(Date.now() / 1000);
+    const sent = new URLSearchParams(location.search).get("sent");
+    if (sent) show(sent === "1", sent === "1" ? "Message sent." : "Something is not working. Please try again.");
+    const endpoint = location.hostname.endsWith("github.io")
+      ? "https://overnightradio.com/contact.php"
+      : form.action;
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      const data = new FormData(form);
-      data.append("_wpcf7_unit_tag", form.dataset.unitTag);
-      data.append("honeypot-22-time-start", String(openedAt));
-      data.append("honeypot-22-time-check", "4");
       const btn = $("button[type=submit]", form);
       btn.disabled = true;
       status.hidden = false;
       status.className = "form__status";
       status.textContent = "Sending…";
       try {
-        const res = await fetch(form.action, { method: "POST", body: data });
+        const res = await fetch(endpoint, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
         const json = await res.json();
-        const ok = json.status === "mail_sent";
-        status.classList.add(ok ? "is-ok" : "is-err");
-        status.textContent = ok ? "Message sent." : "Something is not working. Please try again.";
-        if (ok) form.reset();
+        show(json.ok, json.ok ? "Message sent." : json.message || "Something is not working. Please try again.");
+        if (json.ok) form.reset();
       } catch {
-        status.classList.add("is-err");
-        status.textContent = "Something is not working. Please try again.";
+        show(false, "Something is not working. Please try again.");
       } finally {
         btn.disabled = false;
       }

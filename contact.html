@@ -73,11 +73,12 @@
 
 <section class="section section--paper section--flush-top">
   <div class="wrap contact">
-    <form class="form" method="post" action="https://contact.overnightradio.com/wp-json/contact-form-7/v1/contact-forms/315/feedback" data-contact data-unit-tag="wpcf7-f315-p320-o1">
-      <label>Your name <input type="text" name="your-name" autocomplete="name" placeholder="Put your name here" required maxlength="400"></label>
-      <label>Your email <input type="email" name="your-email" autocomplete="email" placeholder="Your email in this box" required maxlength="400"></label>
-      <label>Your message (optional) <textarea name="your-message" rows="6" maxlength="2000" placeholder="And your message right here"></textarea></label>
-      <label class="hp" aria-hidden="true">Please leave this field empty. <input type="text" name="honeypot-22" tabindex="-1" autocomplete="off"></label>
+    <form class="form" method="post" action="contact.php" data-contact>
+      <label>Your name <input type="text" name="name" autocomplete="name" placeholder="Put your name here" required maxlength="400"></label>
+      <label>Your email <input type="email" name="email" autocomplete="email" placeholder="Your email in this box" required maxlength="400"></label>
+      <label>Your message (optional) <textarea name="message" rows="6" maxlength="2000" placeholder="And your message right here"></textarea></label>
+      <label class="hp" aria-hidden="true">Please leave this field empty. <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      <input type="hidden" name="started" value="">
       <button class="btn btn--amber" type="submit">Send</button>
       <p class="form__status" data-status role="status" hidden></p>
     </form>

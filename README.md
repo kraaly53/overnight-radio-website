@@ -93,10 +93,14 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
 - **Server-only behaviour:** the repository's `.htaccess` (caching rules) isn't published — copy its lines into
   the server's own `.htaccess` by hand if wanted; GitHub Pages ignores it.
   GitHub Pages can't run PHP, so any `.php` files work on the real server only.
-- **Contact form:** `contact.html` sends messages to Contact Form 7 (form 315) on the WordPress site at
-  `contact.overnightradio.com`, which emails them. It works from the preview and the live site (that WordPress
-  allows both addresses). Keep that WordPress and its form running; if the form is changed there, update
-  `contact.html` and the contact-form part of `assets/js/site.js` to match.
+- **Contact form:** `contact.html` posts to `contact.php`, which emails each message to
+  info@overnightradio.com (sender `website@overnightradio.com`, with Reply-To set to the visitor, so replying
+  goes straight to them). The addresses, subject, allowed sites and spam limits are the settings at the top of
+  `contact.php`. Spam protection: a hidden field, a 3-second minimum and 5 messages per visitor per hour.
+  PHP only runs on the real server, so on the GitHub Pages preview the form sends to
+  `https://overnightradio.com/contact.php` instead — it works from the preview only after `contact.php` has been
+  published. overnightradio.com is Windows (IIS) hosting with PHP 8.5; PHP's `mail()` there needs the host's
+  outgoing mail (SMTP) settings — if a test says "could not be sent", ask the host to enable it.
 - **History:** these files were generated from the Eleventy project at
   [kraaly53/onr](https://github.com/kraaly53/onr), which has the full documentation, the archived design review
   and the build tooling. From now on, edit the files here directly.
