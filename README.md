@@ -92,8 +92,11 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
   `.nojekyll` and git files are never uploaded. To remove a page from the live site, delete it on the server too.
 - **Server-only behaviour:** the repository's `.htaccess` (caching rules) isn't published — copy its lines into
   the server's own `.htaccess` by hand if wanted; GitHub Pages ignores it.
-  GitHub Pages can't run PHP, so any `.php` files work on the real server only. The contact form still posts to
-  the old WordPress install and won't send from the preview.
+  GitHub Pages can't run PHP, so any `.php` files work on the real server only.
+- **Contact form:** `contact.html` sends messages to Contact Form 7 (form 315) on the WordPress site at
+  `contact.overnightradio.com`, which emails them. It works from the preview and the live site (that WordPress
+  allows both addresses). Keep that WordPress and its form running; if the form is changed there, update
+  `contact.html` and the contact-form part of `assets/js/site.js` to match.
 - **History:** these files were generated from the Eleventy project at
   [kraaly53/onr](https://github.com/kraaly53/onr), which has the full documentation, the archived design review
   and the build tooling. From now on, edit the files here directly.

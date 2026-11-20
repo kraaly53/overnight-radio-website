@@ -167,15 +167,19 @@
     });
   }
 
-  /* Contact form → Contact Form 7 REST endpoint on the existing WordPress install */
+  /* Contact form → Contact Form 7 on contact.overnightradio.com (form 315). Its spam check
+     rejects messages sent less than 4 seconds after the page opened, so send the start time. */
   const form = $("[data-contact]");
   if (form) {
     const status = $("[data-status]", form);
+    const openedAt = Math.floor(Date.now() / 1000);
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
       data.append("_wpcf7_unit_tag", form.dataset.unitTag);
+      data.append("honeypot-22-time-start", String(openedAt));
+      data.append("honeypot-22-time-check", "4");
       const btn = $("button[type=submit]", form);
       btn.disabled = true;
       status.hidden = false;
