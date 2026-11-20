@@ -1,3 +1,22 @@
+/* Logo comparison: add ?logo=classic to any address to see the previous logo (remembered in this
+   browser until ?logo=new). Remove this block once the new logo is final. */
+(() => {
+  const CLASSIC = "<circle cx=\"20\" cy=\"20\" r=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path class=\"mark__r1\" d=\"M15.8 15.8a6 6 0 0 0 0 8.4M24.2 15.8a6 6 0 0 1 0 8.4\"/><path class=\"mark__r2\" d=\"M12.3 12.3a11 11 0 0 0 0 15.4M27.7 12.3a11 11 0 0 1 0 15.4\"/></g><circle class=\"mark__dot\" cx=\"20\" cy=\"20\" r=\"2.2\" fill=\"currentColor\"/><path d=\"M20 22.5 17.6 31h4.8z\" fill=\"currentColor\"/>";
+  let choice = new URLSearchParams(location.search).get("logo");
+  try {
+    if (choice === "classic") localStorage.setItem("onr-logo", "classic");
+    else if (choice === "new") localStorage.removeItem("onr-logo");
+    choice = localStorage.getItem("onr-logo");
+  } catch {}
+  if (choice !== "classic") return;
+  const swap = () => document.querySelectorAll("svg.mark").forEach((svg) => {
+    svg.setAttribute("viewBox", "0 0 40 40");
+    svg.innerHTML = CLASSIC;
+  });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", swap);
+  else swap();
+})();
+
 /* Match the iPhone Safari status and home-indicator areas to the midnight theme. */
 (() => {
   let theme = document.querySelector('meta[name="theme-color"]');

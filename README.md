@@ -101,6 +101,12 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
   `https://overnightradio.com/contact.php` instead — it works from the preview only after `contact.php` has been
   published. overnightradio.com is Windows (IIS) hosting with PHP 8.5; PHP's `mail()` there needs the host's
   outgoing mail (SMTP) settings — if a test says "could not be sent", ask the host to enable it.
+- **Logo:** the "Moonwave" mark (crescent moon with amber radio waves) is written into every page as an inline
+  `<svg class="mark">`; the artwork is also in `images/logo/logo-moonwave.svg`. Tab icons: `favicon.svg`,
+  `favicon.ico`, `apple-touch-icon.png`. The previous logo is kept in `images/logo/` (`logo-classic.svg`,
+  `favicon-classic.ico`, `apple-touch-icon-classic.png`). To compare them, add `?logo=classic` to any page
+  address (remembered in that browser; `?logo=new` switches back). That switch is the first block in
+  `assets/js/site.js` — delete it once the logo is final.
 - **History:** these files were generated from the Eleventy project at
   [kraaly53/onr](https://github.com/kraaly53/onr), which has the full documentation, the archived design review
   and the build tooling. From now on, edit the files here directly.
