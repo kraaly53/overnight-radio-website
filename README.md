@@ -101,6 +101,8 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
   `https://overnightradio.com/contact.php` instead — it works from the preview only after `contact.php` has been
   published. overnightradio.com is Windows (IIS) hosting with PHP 8.5; PHP's `mail()` there needs the host's
   outgoing mail (SMTP) settings — if a test says "could not be sent", ask the host to enable it.
+- **Tab and home-screen icons:** `favicon.svg` (modern browsers), `favicon.ico` (16/32/48 px fallback) and
+  `apple-touch-icon.png` (180 px, iPhone home screen) — the radio-tower logo in white on midnight blue.
 - **Alternative logo (not in use):** the "Moonwave" mark — a crescent moon with two amber radio waves — was
   tried in November 2026 and set aside; the site uses the original radio-tower logo. Its artwork is kept in
   `images/logo/` (`logo-moonwave.svg`, `favicon-moonwave.svg`, `favicon-moonwave.ico`,
