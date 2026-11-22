@@ -43,6 +43,40 @@ jobs:
     - name: Install lftp
       run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
+    - name: Back up the server files this upload will replace
+      # Downloads the server's current copy of every file about to be uploaded (files that don't exist there yet
+      # are skipped) and keeps them for 90 days as the run's "server-backup" download, so a publish can be undone.
+      env:
+        FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+        LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+        BACKUP: ${{ runner.temp }}/server-backup
+      run: |
+        remote="${REMOTE_DIR%/}"
+        {
+          echo "set ftp:ssl-allow no; set ftp:passive-mode yes; set net:timeout 30; set net:max-retries 5;"
+          echo "set cmd:fail-exit no;"
+          echo "open --env-password -u \"$FTP_USERNAME\" -p 21 \"$FTP_SERVER\";"
+          find . -type f ! -path './.git/*' ! -path './.github/*' ! -name '.git*' ! -name .htaccess \
+               ! -name .nojekyll ! -name README.md ! -name .DS_Store | sed 's|^\./||' | while read -r f; do
+            mkdir -p "$BACKUP/$(dirname "$f")"
+            echo "get -O \"$BACKUP/$(dirname "$f")\" \"$remote/$f\";"
+          done
+        } > "$RUNNER_TEMP/backup.lftp"
+        lftp -f "$RUNNER_TEMP/backup.lftp" > "$RUNNER_TEMP/backup.log" 2>&1 || true
+        find "$BACKUP" -type f -size 0 -delete || true   # files that weren't on the server
+        find "$BACKUP" -type d -empty -delete || true
+        echo "Backed up $(find "$BACKUP" -type f 2>/dev/null | wc -l) existing server files."
+
+    - name: Save the backup
+      uses: actions/upload-artifact@v4
+      with:
+        name: server-backup
+        path: ${{ runner.temp }}/server-backup
+        retention-days: 90
+        if-no-files-found: warn
+
     - name: Upload to server
       # lftp reconnects and retries if the FTP connection drops. Files are uploaded over the server copies; nothing
       # on the server is deleted. Repository-only files and .htaccess are never uploaded.

@@ -88,7 +88,9 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
   the secrets `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD` (overnightradio.com's FTP login) and the variables
   `FTP_REMOTE_DIR` (the web folder as that FTP login sees it) and `SITE_URL` (`https://overnightradio.com/`). It
   only adds and updates files: it **never deletes** anything on the server (so WordPress, old pages and other
-  hosting files are left alone) and **never uploads `.htaccess`** (the server keeps its own). README, `.github`,
+  hosting files are left alone) and **never uploads `.htaccess`** (the server keeps its own). Before uploading, it downloads the server's current copy of every file it's about to replace and keeps it
+  for 90 days as the run's **server-backup** download (Actions → the run → Artifacts) — to undo a publish,
+  upload those files back by FTP. README, `.github`,
   `.nojekyll` and git files are never uploaded. To remove a page from the live site, delete it on the server too.
 - **Server-only behaviour:** the repository's `.htaccess` (caching rules) isn't published — copy its lines into
   the server's own `.htaccess` by hand if wanted; GitHub Pages ignores it.
