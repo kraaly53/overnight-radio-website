@@ -116,42 +116,6 @@
     });
   });
 
-  /* Team: play a voice sample right on the page (one at a time, with a progress bar and time left) */
-  const quick = new Audio();
-  quick.preload = "none";
-  let quickBtn = null;
-  const setQuick = (li, p, text) => {
-    li.style.setProperty("--p", p);
-    const t = li.querySelector("[data-quicktime]");
-    if (t) t.textContent = text;
-  };
-  const resetQuick = () => {
-    if (!quickBtn) return;
-    const li = quickBtn.closest(".voice");
-    li.classList.remove("is-playing");
-    setQuick(li, 0, "");
-    quickBtn = null;
-  };
-  quick.addEventListener("ended", resetQuick);
-  quick.addEventListener("pause", () => { if (quick.paused) resetQuick(); });   // not when switching to another voice
-  quick.addEventListener("timeupdate", () => {
-    if (!quickBtn || !quick.duration) return;
-    setQuick(quickBtn.closest(".voice"), quick.currentTime / quick.duration, fmt(quick.duration - quick.currentTime));
-  });
-  $$("[data-quickplay]").forEach((b) => {
-    b.addEventListener("click", () => {
-      if (quickBtn === b) { quick.pause(); return; }
-      resetQuick();
-      quick.pause();
-      quick.src = b.dataset.quickplay;
-      quick.play().catch(() => { if (quickBtn === b) resetQuick(); });   // e.g. the file didn't load
-      quickBtn = b;
-      b.closest(".voice").classList.add("is-playing");
-    });
-    // A click anywhere on the card plays the sample too.
-    b.closest(".voice").addEventListener("click", (e) => { if (!b.contains(e.target)) b.click(); });
-  });
-
   /* Team: find a voice by name */
   const search = $("[data-team-search]");
   if (search) {

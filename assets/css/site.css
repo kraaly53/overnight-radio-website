@@ -340,28 +340,30 @@ body { padding-top: var(--masthead-h); }
 }
 .search input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgb(var(--glow-rgb) / .15); }
 
-.talent { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.talent { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
 .voice {
-  position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px;
-  padding: 12px 14px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line);
-  cursor: pointer; transition: border-color .2s, box-shadow .2s;
+  padding: 16px 16px 14px; border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line);
+  transition: border-color .2s, box-shadow .2s;
 }
-.voice:hover { border-color: var(--navy); }
-.voice__play {
-  flex: none; width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer;
-  background: var(--amber); color: var(--amber-ink); box-shadow: 0 6px 18px -8px rgb(var(--shadow-rgb) / .5);
-  transition: transform .15s;
-}
-.voice__play:hover { transform: scale(1.06); }
-.voice__play svg { width: 16px; height: 16px; }
-.voice .i-pause, .voice.is-playing .i-play { display: none; }
-.voice.is-playing .i-pause { display: block; }
-.voice__text { flex: 1; min-width: 0; }
-.voice__name { display: block; font: 700 17px/1.2 var(--display); }
-.voice__flag { display: inline-block; margin-top: 4px; font: 500 10.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.voice__time { flex: none; font: 500 12px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-.voice__bar { position: absolute; left: 0; bottom: 0; height: 3px; width: calc(var(--p, 0) * 100%); background: var(--amber); }
-.voice.is-playing { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+.voice:hover { border-color: rgb(var(--glow-rgb) / .45); }
+.voice:has(.is-playing) { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), 0 14px 30px -18px rgb(var(--shadow-rgb) / .45); }
+.voice__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
+.voice__name { font: 700 19px/1.2 var(--display); }
+.voice:has(.is-playing) .voice__name { color: var(--navy); }
+.voice__flag { font: 500 10.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+/* The site's audio player, sized for a Team card */
+.player--card { margin: 0; max-width: none; }
+.section--paper .player--card.is-enhanced { padding: 0; gap: 12px; border: 0; border-radius: 0; background: none; }
+.player--card .player__btn { width: 44px; height: 44px; }
+.player--card .player__btn svg { width: 17px; height: 17px; }
+.player--card .player__track { height: 28px; }
+/* Different wave shapes on neighbouring cards: the wave repeats at a finer size from a different starting point */
+.player--card .player__wave, .player--card .player__fill { -webkit-mask-size: 62% 100%; mask-size: 62% 100%; -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x; }
+.voice:nth-child(4n+2) .player__wave, .voice:nth-child(4n+2) .player__fill { -webkit-mask-position: 30% 0; mask-position: 30% 0; }
+.voice:nth-child(4n+3) .player__wave, .voice:nth-child(4n+3) .player__fill { -webkit-mask-position: 55% 0; mask-position: 55% 0; }
+.voice:nth-child(4n) .player__wave, .voice:nth-child(4n) .player__fill { -webkit-mask-position: 80% 0; mask-position: 80% 0; }
+.player--card .player__meta { margin: 6px 0 0; justify-content: flex-end; font-size: 11px; }
+.player--card .player__time { color: var(--muted); }
 .empty { color: var(--muted); padding: 24px 0; }
 
 /* ---------- Profile (announcer & spot detail) ---------- */
@@ -617,7 +619,7 @@ body { padding-top: var(--masthead-h); }
   .talent-head { flex-direction: column; align-items: stretch; gap: 0; }
   .search { margin-top: 0; margin-bottom: 20px; }
   .search input { width: 100%; }
-  .talent { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .talent { grid-template-columns: 1fr; gap: 12px; }
   .console { grid-template-columns: 1fr; }
   .console__pane + .console__pane { border-left: 0; border-top: 1px solid var(--line-n); }
   .readout { margin-left: 0; }

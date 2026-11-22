@@ -65,8 +65,9 @@ ChatGPT (the free or basic version is fine) can make the edit for you:
 
 These touch several files at once, so ask the developer (or ask ChatGPT carefully, one file at a time):
 
-- **Adding a new announcer:** upload their sample to `audio/`, then copy one `<li class="voice" …>…</li>` entry
-  on `team.html` and change the name and the sample's file name. No photo or separate page is needed.
+- **Adding a new announcer:** upload their sample to `audio/` (`.mp3`, plus `.ogg` if you have one), then copy
+  one `<li class="voice" …>…</li>` entry on `team.html` and change the name (in `data-name`, the name and the
+  two labels) and the sample's file names. No photo or separate page is needed.
 - **Adding a blog post:** a new folder in `blog/` (copy an existing post), plus an entry on `blog/index.html`.
   The blog's category, tag and month pages and its search won't include the new post automatically.
 - **Removing someone or something:** delete the file **and** remove its link from the page that lists it.
@@ -113,8 +114,9 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
 - **Tab and home-screen icons:** `favicon.svg` (modern browsers), `favicon.ico` (16/32/48 px fallback) and
   `apple-touch-icon.png` (180 px, iPhone home screen) — the radio-tower logo in white on midnight blue. The pages link them with `?v=2`; if an icon changes, raise that
   number on every page so browsers (Safari especially) stop showing the old one.
-- **Team page:** since November 2026 the Talent list shows names only; clicking a card plays that voice's sample
-  on the page (one at a time, with a progress bar and time left). The earlier version — photos, each linking to
+- **Team page:** since November 2026 the Talent list has no photos or links: each card shows the name with the
+  same audio player as the individual pages underneath (play/pause, waveform you can click to jump, time). Only
+  one sample plays at a time, and the playing card is outlined in gold. The earlier version — photos, each linking to
   the person's page in `team/` — is kept in `archive/team-with-photos.html` (with frozen copies of the CSS and
   JavaScript beside it). It's viewable on the preview at `archive/team-with-photos.html`, isn't linked from the
   site, and the publish never uploads `archive/`. The pages in `team/` still exist so old links keep working.
