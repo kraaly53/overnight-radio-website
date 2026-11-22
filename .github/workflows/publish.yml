@@ -68,6 +68,7 @@ jobs:
         find "$BACKUP" -type f -size 0 -delete || true   # files that weren't on the server
         find "$BACKUP" -type d -empty -delete || true
         echo "Backed up $(find "$BACKUP" -type f 2>/dev/null | wc -l) existing server files."
+        echo "Last lines of the backup log:"; tail -n 15 "$RUNNER_TEMP/backup.log" || true
 
     - name: Save the backup
       uses: actions/upload-artifact@v4
@@ -78,6 +79,7 @@ jobs:
         if-no-files-found: warn
 
     - name: Upload to server
+      # Each lftp command must stay on ONE line: inside lftp -c a new line starts a new command.
       # lftp reconnects and retries if the FTP connection drops. Files are uploaded over the server copies; nothing
       # on the server is deleted. Repository-only files and .htaccess are never uploaded.
       env:
@@ -94,9 +96,7 @@ jobs:
           set net:reconnect-interval-base 5;
           set net:reconnect-interval-max 30;
           open --env-password -u \"$FTP_USERNAME\" -p 21 \"$FTP_SERVER\";
-          mirror --reverse --parallel=2 --verbose=1
-            --exclude-glob .git* --exclude-glob .github/ --exclude-glob .htaccess --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store
-            ./ \"$REMOTE_DIR\";
+          mirror --reverse --parallel=2 --verbose=1 --no-perms --exclude-glob .git* --exclude-glob .git/ --exclude-glob .github/ --exclude-glob .htaccess --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store ./ \"$REMOTE_DIR\";
         "
 
     - name: Check the site loads
