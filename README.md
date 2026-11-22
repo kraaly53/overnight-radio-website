@@ -101,8 +101,13 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
   `contact.php`. Spam protection: a hidden field, a 3-second minimum and 5 messages per visitor per hour.
   PHP only runs on the real server, so on the GitHub Pages preview the form sends to
   `https://overnightradio.com/contact.php` instead — it works from the preview only after `contact.php` has been
-  published. overnightradio.com is Windows (IIS) hosting with PHP 8.5; PHP's `mail()` there needs the host's
-  outgoing mail (SMTP) settings — if a test says "could not be sent", ask the host to enable it.
+  published. overnightradio.com is Windows hosting (Site4Now) with no local mail server, so `contact.php` logs in
+  to a mail server (SMTP) to send. Add these repository **secrets** and run the publish: `SMTP_HOST`, `SMTP_PORT`
+  (465 for SSL, otherwise STARTTLS, default 587), `SMTP_USERNAME`, `SMTP_PASSWORD`, and optionally `SMTP_FROM`
+  (the sender address; defaults to the username if it's an email address). The domain's SPF record allows
+  Amazon SES and Site4Now mail servers. The publish writes them to `contact-config.php` on the server only (it's
+  in `.gitignore`, never in the repository or the backup download). If sending fails, the reason is in the
+  server's PHP error log.
 - **Tab and home-screen icons:** `favicon.svg` (modern browsers), `favicon.ico` (16/32/48 px fallback) and
   `apple-touch-icon.png` (180 px, iPhone home screen) — the radio-tower logo in white on midnight blue. The pages link them with `?v=2`; if an icon changes, raise that
   number on every page so browsers (Safari especially) stop showing the old one.

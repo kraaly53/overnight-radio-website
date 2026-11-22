@@ -78,6 +78,29 @@ jobs:
         retention-days: 90
         if-no-files-found: warn
 
+    - name: Write the contact form's mail settings
+      # Creates contact-config.php (server only, never committed) from the SMTP_* secrets so contact.php can log in
+      # to the mail server. It runs after the backup, so the password never ends up in the backup download.
+      env:
+        SMTP_HOST: ${{ secrets.SMTP_HOST }}
+        SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+        SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        SMTP_FROM: ${{ secrets.SMTP_FROM }}
+      run: |
+        if [ -z "$SMTP_HOST" ]; then echo "::warning::No SMTP_HOST secret, so the contact form can't send email."; exit 0; fi
+        python3 - <<'EOF'
+        import os
+        q = lambda v: "'" + v.replace("\\", "\\\\").replace("'", "\\'") + "'"
+        user = os.environ.get("SMTP_USERNAME", "")
+        frm = os.environ.get("SMTP_FROM") or (user if "@" in user else "")
+        vals = {"host": os.environ["SMTP_HOST"], "port": os.environ.get("SMTP_PORT") or "587",
+                "username": user, "password": os.environ.get("SMTP_PASSWORD", ""), "from": frm}
+        body = ",\n".join(f"    {q(k)} => {q(v)}" for k, v in vals.items())
+        open("contact-config.php", "w").write("<?php\n// Written by the publish workflow. Do not commit.\nreturn [\n" + body + ",\n];\n")
+        EOF
+        echo "Wrote contact-config.php for $SMTP_HOST"
+
     - name: Upload to server
       # Each lftp command must stay on ONE line: inside lftp -c a new line starts a new command.
       # lftp reconnects and retries if the FTP connection drops. Files are uploaded over the server copies; nothing
