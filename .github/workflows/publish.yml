@@ -58,7 +58,7 @@ jobs:
           echo "set ftp:ssl-allow no; set ftp:passive-mode yes; set net:timeout 30; set net:max-retries 5;"
           echo "set cmd:fail-exit no;"
           echo "open --env-password -u \"$FTP_USERNAME\" -p 21 \"$FTP_SERVER\";"
-          find . -type f ! -path './.git/*' ! -path './.github/*' ! -name '.git*' ! -name .htaccess \
+          find . -type f ! -path './.git/*' ! -path './.github/*' ! -path './archive/*' ! -name '.git*' ! -name .htaccess \
                ! -name .nojekyll ! -name README.md ! -name .DS_Store | sed 's|^\./||' | while read -r f; do
             mkdir -p "$BACKUP/$(dirname "$f")"
             echo "get -O \"$BACKUP/$(dirname "$f")\" \"$remote/$f\";"
@@ -104,7 +104,7 @@ jobs:
     - name: Upload to server
       # Each lftp command must stay on ONE line: inside lftp -c a new line starts a new command.
       # lftp reconnects and retries if the FTP connection drops. Files are uploaded over the server copies; nothing
-      # on the server is deleted. Repository-only files and .htaccess are never uploaded.
+      # on the server is deleted. Repository-only files, the archive/ folder and .htaccess are never uploaded.
       env:
         FTP_SERVER: ${{ secrets.FTP_SERVER }}
         FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -119,7 +119,7 @@ jobs:
           set net:reconnect-interval-base 5;
           set net:reconnect-interval-max 30;
           open --env-password -u \"$FTP_USERNAME\" -p 21 \"$FTP_SERVER\";
-          mirror --reverse --parallel=2 --verbose=1 --no-perms --exclude-glob .git* --exclude-glob .git/ --exclude-glob .github/ --exclude-glob .htaccess --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store ./ \"$REMOTE_DIR\";
+          mirror --reverse --parallel=2 --verbose=1 --no-perms --exclude-glob .git* --exclude-glob .git/ --exclude-glob .github/ --exclude-glob archive/ --exclude-glob .htaccess --exclude-glob .nojekyll --exclude-glob README.md --exclude-glob .DS_Store ./ \"$REMOTE_DIR\";
         "
 
     - name: Check the site loads

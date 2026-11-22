@@ -20,7 +20,7 @@ here is exactly what goes on the web.
    | Home | `index.html` |
    | Our Services (and prices) | `services.html` |
    | Our Work | `work.html` — each spot's own page is in `work/` (e.g. `work/quiznos.html`) |
-   | Team | `team.html` — each person's own page is in `team/` (e.g. `team/allison.html`) |
+   | Team | `team.html` — voices are listed by name and their samples play right on the page |
    | Script Calculator | `calculator.html` |
    | Contact | `contact.html` |
    | Privacy Policy | `privacypolicy.html` |
@@ -54,7 +54,8 @@ ChatGPT (the free or basic version is fine) can make the edit for you:
 ## 4. Photos and voice samples
 
 - **Replace a photo:** open `images/announcers/`, **Add file → Upload files**, and upload a photo with **exactly the
-  same file name** as the old one (e.g. `allison.jpg`). Square photos, at least 600×600, look best.
+  same file name** as the old one (e.g. `allison.jpg`). Square photos, at least 600×600, look best. (The Team page
+  no longer shows announcer photos; they're still used by the archived Team page and each person's old page.)
 - **Replace a voice sample:** do the same in `audio/` (e.g. `allison.mp3`). Browsers remember old audio, so if the
   preview still plays the old sample, wait a little or refresh.
 - **New file names:** if you upload a file with a different name, the page has to be changed to point at it — ask
@@ -64,7 +65,8 @@ ChatGPT (the free or basic version is fine) can make the edit for you:
 
 These touch several files at once, so ask the developer (or ask ChatGPT carefully, one file at a time):
 
-- **Adding a new announcer:** a new page in `team/` (copy an existing one), plus an entry on `team.html`.
+- **Adding a new announcer:** upload their sample to `audio/`, then copy one `<li class="voice" …>…</li>` entry
+  on `team.html` and change the name and the sample's file name. No photo or separate page is needed.
 - **Adding a blog post:** a new folder in `blog/` (copy an existing post), plus an entry on `blog/index.html`.
   The blog's category, tag and month pages and its search won't include the new post automatically.
 - **Removing someone or something:** delete the file **and** remove its link from the page that lists it.
@@ -111,6 +113,11 @@ These touch several files at once, so ask the developer (or ask ChatGPT carefull
 - **Tab and home-screen icons:** `favicon.svg` (modern browsers), `favicon.ico` (16/32/48 px fallback) and
   `apple-touch-icon.png` (180 px, iPhone home screen) — the radio-tower logo in white on midnight blue. The pages link them with `?v=2`; if an icon changes, raise that
   number on every page so browsers (Safari especially) stop showing the old one.
+- **Team page:** since November 2026 the Talent list shows names only; clicking a card plays that voice's sample
+  on the page (one at a time, with a progress bar and time left). The earlier version — photos, each linking to
+  the person's page in `team/` — is kept in `archive/team-with-photos.html` (with frozen copies of the CSS and
+  JavaScript beside it). It's viewable on the preview at `archive/team-with-photos.html`, isn't linked from the
+  site, and the publish never uploads `archive/`. The pages in `team/` still exist so old links keep working.
 - **Alternative logo (not in use):** the "Moonwave" mark — a crescent moon with two amber radio waves — was
   tried in November 2026 and set aside; the site uses the original radio-tower logo. Its artwork is kept in
   `images/logo/` (`logo-moonwave.svg`, `favicon-moonwave.svg`, `favicon-moonwave.ico`,
