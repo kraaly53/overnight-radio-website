@@ -24,6 +24,7 @@ here is exactly what goes on the web.
    | Script Calculator | `calculator.html` |
    | Contact | `contact.html` |
    | Privacy Policy | `privacypolicy.html` |
+   | Creative request forms (not in the menu — sent to clients as direct links) | `creative-request.html` and `rogers.html` (Creative Request), `request.html` (Rogers Sports & Media creative brief). Each embeds a JotForm form; the form's questions are edited in JotForm, not here. |
    | Blog | `blog/index.html` — each post is in its own folder (e.g. `blog/keep-your-ads-fresh/index.html`) |
 
 2. Click the **pencil** (Edit this file).
